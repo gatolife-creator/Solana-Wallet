@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 import HeadComponent from "../components/Head";
 import GenerateWallet from "../components/GenerateWallet";
@@ -15,6 +16,7 @@ export default function Home() {
   const [account, setAccount] = useState(null);
   const [network, setNetwork] = useState(null);
   const [balance, setBalance] = useState(null);
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     if (NETWORK === "devnet") {
@@ -59,7 +61,15 @@ export default function Home() {
             <>
               <div className="my-6 text-indigo-600 font-bold">
                 <span>アドレス: </span>
-                {account.publicKey.toString()}
+                <CopyToClipboard
+                  text={account.publicKey.toString()}
+                  onCopy={() => setIsCopied(true)}
+                >
+                  <button className="btn btn-primary">
+                    {account.publicKey.toString()}
+                  </button>
+                </CopyToClipboard>
+                <p className="text-gray-600">{isCopied ? "copied!" : ""}</p>
               </div>
               <div className="my-6 font-bold">ネットワーク: {NETWORK}</div>
               {typeof balance === "number" && (
